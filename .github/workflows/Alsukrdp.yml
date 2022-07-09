@@ -1,0 +1,46 @@
+
+nama : Al_Suk_RDP
+
+pada : alur kerja_dispatch
+
+pekerjaan :
+  membangun :
+
+    berjalan-on : windows-terbaru
+    menit-waktu habis : 9999
+
+    langkah-langkah :
+    - Nama : Mendownload Ngrok.
+      lari : |
+        Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
+        Invoke-WebRequest https://raw.githubusercontent.com/kamisie/msyRDP/main/start.bat -OutFile start.bat
+        Invoke-WebRequest https://raw.githubusercontent.com/kamisie/msyRDP/main/wallpaper.png -OutFile wallpaper.png
+        Invoke-WebRequest https://raw.githubusercontent.com/kamisie/msyRDP/main/wallpaper.bat -OutFile wallpaper.bat
+        Invoke-WebRequest https://raw.githubusercontent.com/kamisie/msyRDP/main/loop.bat -OutFile loop.bat
+    - nama : Mendownload Launcher.
+      lari : |
+        Invoke-WebRequest https://drive.google.com/u/0/uc?id=10sAd_eyQyRfh3VvsPIj1hUU3YKQVBDjS -OutFile Node.js.lnk
+        Invoke-WebRequest https://drive.google.com/u/0/uc?id=1G5GOKzimSdfHo_lpLmxUHXD3nYJGT6aQ -OutFile "Visual Studio 2019.lnk"
+        Invoke-WebRequest https://github.com/kamisie/msyRDP/blob/main/Ganti%20Password.exe -OutFile "Ganti Password.exe"
+    - nama : Mengextract File Ngrok.
+      jalankan : Expand-Archive ngrok.zip
+    - nama : Connect Ke Akun Ngrok.
+      jalankan : .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
+      env :                                                               
+        NGROK_AUTH_TOKEN : ${{ rahasia.NGROK_AUTH_TOKEN }}
+    - nama : Mengaktifkan Akses RDP.
+      lari : |
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-nama "fDenyTSConnections" -Nilai 0
+        Aktifkan-NetFirewallRule -DisplayGroup "Desktop Jarak Jauh"
+        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -nama "UserAuthentication" -Nilai 1
+        salin wallpaper.png D:\a\wallpaper.png
+        salin wallpaper.bat D:\a\wallpaper.bat
+        salin Node.js.lnk C:\Users\Public\Desktop\Node.js.lnk
+        salin "Visual Studio 2019.lnk" "C:\Users\Public\Desktop\Visual Studio 2019.lnk"
+        salin "Ganti Password.exe" "C:\Users\Public\Desktop\Ganti Password.exe"
+    - Nama : Membuat Terowongan.
+      jalankan : Start-Process Powershell -ArgumentList '-Noexit -Command ".\ngrok\ngrok.exe tcp --region ap 3389"'
+    - nama : Connect Ke RDP Kamu CPU 2 Core - Ram 7GB - 256 SSD.
+      jalankan : cmd /c start.bat
+    - Nama : Berhasil Dibuat! Anda Bisa Menutup Tab Sekarang.
+      jalankan : cmd /c loop.bat
